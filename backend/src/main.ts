@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, BadRequestException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
@@ -18,10 +18,15 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true, // Strip properties that do not have decorators
-      forbidNonWhitelisted: true, // Throw error if non-whitelisted properties are present
+      forbidNonWhitelisted: false, // Don't throw error if non-whitelisted properties are present
       transform: true, // Automatically transform payloads to DTO instances
       transformOptions: {
         enableImplicitConversion: true, // Allow implicit type conversion
+      },
+      disableErrorMessages: false, // Enable detailed error messages
+      exceptionFactory: (errors) => {
+        console.log('🔍 Validation errors details:', JSON.stringify(errors, null, 2));
+        return new BadRequestException(errors);
       },
     }),
   );

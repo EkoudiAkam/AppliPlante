@@ -25,7 +25,7 @@ export const useAuth = () => {
     if (!isAuthenticated && !isLoading) {
       checkAuth();
     }
-  }, []); // Aucune dépendance pour éviter les re-exécutions
+  }, [isAuthenticated, isLoading, checkAuth]); // Ajouter les dépendances nécessaires
 
   return {
     // État

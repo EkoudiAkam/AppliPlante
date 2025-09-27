@@ -1,0 +1,28 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Pot -->
+  <path d="M60 140 L140 140 L130 180 L70 180 Z" fill="#8B4513" stroke="#654321" stroke-width="2"/>
+  <ellipse cx="100" cy="140" rx="40" ry="8" fill="#A0522D"/>
+  
+  <!-- Terre -->
+  <ellipse cx="100" cy="140" rx="35" ry="6" fill="#4A4A4A"/>
+  
+  <!-- Tige principale -->
+  <line x1="100" y1="140" x2="100" y2="80" stroke="#228B22" stroke-width="4"/>
+  
+  <!-- Feuilles -->
+  <ellipse cx="85" cy="100" rx="15" ry="25" fill="#32CD32" transform="rotate(-30 85 100)"/>
+  <ellipse cx="115" cy="95" rx="12" ry="20" fill="#228B22" transform="rotate(25 115 95)"/>
+  <ellipse cx="90" cy="85" rx="18" ry="30" fill="#90EE90" transform="rotate(-15 90 85)"/>
+  <ellipse cx="110" cy="75" rx="14" ry="22" fill="#32CD32" transform="rotate(40 110 75)"/>
+  
+  <!-- Fleur -->
+  <circle cx="100" cy="65" r="8" fill="#FFD700"/>
+  <circle cx="92" cy="60" r="6" fill="#FF69B4"/>
+  <circle cx="108" cy="60" r="6" fill="#FF69B4"/>
+  <circle cx="95" cy="72" r="6" fill="#FF69B4"/>
+  <circle cx="105" cy="72" r="6" fill="#FF69B4"/>
+  <circle cx="100" cy="55" r="6" fill="#FF69B4"/>
+  
+  <!-- Centre de la fleur -->
+  <circle cx="100" cy="65" r="4" fill="#FFA500"/>
+</svg>

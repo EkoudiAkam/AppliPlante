@@ -25,6 +25,7 @@ const plantSchema = z.object({
   notes: z.string().max(500, 'Les notes ne peuvent pas dépasser 500 caractères').optional(),
   location: z.string().min(1, 'L\'emplacement est requis').max(100, 'L\'emplacement ne peut pas dépasser 100 caractères'),
   waterFrequencyDays: z.number().min(1, 'La fréquence doit être d\'au moins 1 jour').max(365, 'La fréquence ne peut pas dépasser 365 jours'),
+  waterAmountMl: z.number().min(50, 'La quantité doit être d\'au moins 50ml').max(2000, 'La quantité ne peut pas dépasser 2000ml'),
 });
 
 type PlantFormData = z.infer<typeof plantSchema>;
@@ -52,6 +53,7 @@ export default function AddPlantPage() {
       notes: '',
       location: '',
       waterFrequencyDays: 7,
+      waterAmountMl: 250,
     },
   });
 
@@ -67,7 +69,7 @@ export default function AddPlantPage() {
     try {
       const plantData = {
         ...data,
-        image: imageBase64 || undefined,
+        imageUrl: imageBase64 || undefined,
       };
 
       await createPlantMutation.mutateAsync(plantData);
@@ -238,19 +240,21 @@ export default function AddPlantPage() {
                     )}
                   />
 
-                  {/* Notes */}
+                  {/* Water Amount */}
                   <FormField
                     control={form.control}
-                    name="notes"
+                    name="waterAmountMl"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Notes</FormLabel>
+                        <FormLabel>Quantité d&apos;eau (en ml) *</FormLabel>
                         <FormControl>
-                          <Textarea
-                            placeholder="Notes sur votre plante..."
-                            className="resize-none"
-                            rows={3}
+                          <Input
+                            type="number"
+                            min="50"
+                            max="2000"
+                            placeholder="250"
                             {...field}
+                            onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
                           />
                         </FormControl>
                         <FormMessage />

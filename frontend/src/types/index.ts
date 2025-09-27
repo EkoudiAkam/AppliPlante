@@ -17,7 +17,7 @@ export interface Plant {
   waterAmountMl?: number;
   location?: string;
   notes?: string;
-  image?: string; // base64
+  imageUrl?: string; // URL ou base64
   nextWateringAt: string;
   createdAt: string;
   updatedAt: string;
@@ -94,18 +94,20 @@ export interface CreatePlantDto {
   name: string;
   species: string;
   waterFrequencyDays: number;
+  waterAmountMl: number;
   location?: string;
   notes?: string;
-  image?: string;
+  imageUrl?: string;
 }
 
 export interface UpdatePlantDto {
   name?: string;
   species?: string;
   waterFrequencyDays?: number;
+  waterAmountMl?: number;
   location?: string;
   notes?: string;
-  image?: string;
+  imageUrl?: string;
 }
 
 export interface CreateWateringDto {

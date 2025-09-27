@@ -42,6 +42,11 @@ export class WateringsController {
     return this.wateringsService.getWateringHistory(req.user.id, days);
   }
 
+  @Get('plant/:plantId')
+  async getWateringsByPlant(@Param('plantId') plantId: string, @Request() req) {
+    return this.wateringsService.findAll(req.user.id, plantId);
+  }
+
   @Get(':id')
   async findOne(@Param('id') id: string, @Request() req) {
     return this.wateringsService.findOne(id, req.user.id);

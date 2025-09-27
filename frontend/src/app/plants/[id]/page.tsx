@@ -159,7 +159,7 @@ export default function PlantDetailsPage() {
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
               <div className="aspect-w-16 aspect-h-9 bg-gray-100">
                 <img
-                  src={plant.image || DEFAULT_PLANT_IMAGE}
+                  src={plant.imageUrl || DEFAULT_PLANT_IMAGE}
                   alt={plant.name}
                   className="w-full h-64 object-cover"
                 />

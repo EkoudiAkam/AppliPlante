@@ -5,6 +5,7 @@ import {
   Min,
   IsDateString,
   IsUrl,
+  Matches,
 } from 'class-validator';
 
 export class CreatePlantDto {
@@ -20,8 +21,18 @@ export class CreatePlantDto {
   purchaseDate?: string;
 
   @IsOptional()
-  @IsUrl()
+  @Matches(/^(https?:\/\/.*|data:image\/(jpeg|jpg|png|gif|webp);base64,.*)$/, {
+    message: 'imageUrl must be a valid URL or a base64 data URL',
+  })
   imageUrl?: string;
+
+  @IsOptional()
+  @IsString()
+  notes?: string;
+
+  @IsOptional()
+  @IsString()
+  location?: string;
 
   @IsInt()
   @Min(1)

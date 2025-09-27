@@ -96,7 +96,7 @@ export class UsersService {
   }
 
   async getUserStats(id: string) {
-    const stats = await this.prisma.user.findUnique({
+    const user = await this.prisma.user.findUnique({
       where: { id },
       select: {
         _count: {
@@ -108,13 +108,46 @@ export class UsersService {
       },
     });
 
-    if (!stats) {
+    if (!user) {
       throw new NotFoundException('User not found');
     }
 
+    // Calculer les statistiques du mois en cours
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+    const [wateringsThisMonth, plantsWateredTodayResult] = await Promise.all([
+      this.prisma.watering.count({
+        where: {
+          userId: id,
+          createdAt: { gte: startOfMonth },
+        },
+      }),
+      this.prisma.watering.findMany({
+        where: {
+          userId: id,
+          createdAt: { gte: startOfToday },
+        },
+        select: {
+          plantId: true,
+        },
+        distinct: ['plantId'],
+      }),
+    ]);
+
+    const plantsWateredToday = plantsWateredTodayResult.length;
+
+    // Calculer la moyenne d'arrosages par jour ce mois
+    const daysInMonth = now.getDate(); // Nombre de jours écoulés ce mois
+    const averageWateringsPerDay = daysInMonth > 0 ? wateringsThisMonth / daysInMonth : 0;
+
     return {
-      totalPlants: stats._count.plants,
-      totalWaterings: stats._count.waterings,
+      totalPlants: user._count.plants,
+      totalWaterings: user._count.waterings,
+      wateringsThisMonth,
+      averageWateringsPerDay,
+      plantsWateredToday,
     };
   }
 }

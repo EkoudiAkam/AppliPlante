@@ -38,8 +38,8 @@ export class WateringsService {
       },
     });
 
-    // Update plant's next watering date
-    const nextWateringAt = new Date();
+    // Update plant's next watering date based on the watering date, not current date
+    const nextWateringAt = new Date(watering.createdAt);
     nextWateringAt.setDate(nextWateringAt.getDate() + plant.waterFrequencyDays);
 
     await this.prisma.plant.update({

@@ -17,7 +17,7 @@ export interface Notification {
  * Simule des notifications basées sur les plantes qui ont besoin d'eau
  */
 export const useNotifications = () => {
-  const { data: plants = [], isLoading: plantsLoading } = usePlants();
+  const { data: plants = [], isLoading: plantsLoading, error: plantsError } = usePlants();
 
   return useQuery<Notification[]>({
     queryKey: [QUERY_KEYS.NOTIFICATIONS, plants.length],
@@ -50,7 +50,7 @@ export const useNotifications = () => {
             message: `${plant.name} aura besoin d'eau demain`,
             type: 'daily_reminder',
             isRead: false,
-            createdAt: new Date(now.getTime() - 1000 * 3600).toISOString(),
+            createdAt: new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString(),
             plantId: plant.id,
           });
         }
@@ -61,7 +61,7 @@ export const useNotifications = () => {
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       );
     },
-    enabled: !plantsLoading,
+    enabled: !plantsLoading && !plantsError && plants.length >= 0, // Attendre que les plantes soient chargées
     refetchInterval: 5 * 60 * 1000, // Refetch toutes les 5 minutes
     staleTime: 2 * 60 * 1000, // Considérer les données comme fraîches pendant 2 minutes
   });

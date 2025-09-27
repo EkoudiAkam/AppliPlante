@@ -33,6 +33,8 @@ model Plant {
   species              String?
   purchaseDate         DateTime?
   imageUrl             String?
+  notes                String?
+  location             String?
   waterAmountMl        Int
   waterFrequencyDays   Int
   nextWateringAt       DateTime?

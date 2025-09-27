@@ -38,6 +38,16 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 
 import { Navbar } from '@/components/layout/Navbar';
 import { PlantsFilters, PlantFilters } from '@/components/PlantsFilters';
@@ -55,6 +65,9 @@ export default function PlantsPage() {
     wateringStatus: 'all',
   });
   const [plantToDelete, setPlantToDelete] = useState<Plant | null>(null);
+  const [selectedPlantForWatering, setSelectedPlantForWatering] = useState<Plant | null>(null);
+  const [wateringAmount, setWateringAmount] = useState('');
+  const [wateringNote, setWateringNote] = useState('');
 
   // Redirection si non authentifié
   useEffect(() => {
@@ -66,6 +79,7 @@ export default function PlantsPage() {
   // Récupération des données
   const { data: plants, isLoading: plantsLoading, refetch } = useApi.usePlants();
   const deletePlantMutation = useApi.useDeletePlant();
+  const createWateringMutation = useApi.useCreateWatering();
 
   // Fonction pour déterminer le statut d'arrosage d'une plante
   const getWateringStatus = (plant: Plant): 'due' | 'overdue' | 'upcoming' => {
@@ -115,6 +129,26 @@ export default function PlantsPage() {
       setPlantToDelete(null);
     } catch (error) {
       toast.error('Erreur lors de la suppression de la plante');
+    }
+  };
+
+  // Arrosage d'une plante
+  const handleWaterPlant = async () => {
+    if (!selectedPlantForWatering || !wateringAmount) return;
+
+    try {
+      await createWateringMutation.mutateAsync({
+        plantId: selectedPlantForWatering.id,
+        amountMl: parseInt(wateringAmount),
+        note: wateringNote || undefined,
+      });
+      toast.success('Plante arrosée avec succès');
+      refetch();
+      setSelectedPlantForWatering(null);
+      setWateringAmount('');
+      setWateringNote('');
+    } catch (error) {
+      toast.error('Erreur lors de l\'arrosage de la plante');
     }
   };
 
@@ -214,7 +248,7 @@ export default function PlantsPage() {
                   {/* Image de la plante */}
                   <div className="h-48 bg-gray-200 relative">
                     <Image
-                      src={plant.image || DEFAULT_PLANT_IMAGE}
+                      src={plant.imageUrl || DEFAULT_PLANT_IMAGE}
                       alt={plant.name}
                       fill
                       className="object-cover"
@@ -296,7 +330,7 @@ export default function PlantsPage() {
                       </Link>
                       <Button
                         size="sm"
-                        onClick={() => router.push(`${ROUTES.PLANTS}/${plant.id}/water`)}
+                        onClick={() => setSelectedPlantForWatering(plant)}
                         className="flex-1"
                       >
                         <Droplets className="h-4 w-4 mr-1" />
@@ -333,6 +367,61 @@ export default function PlantsPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Modal d'arrosage */}
+      <Dialog open={!!selectedPlantForWatering} onOpenChange={() => setSelectedPlantForWatering(null)}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Arroser {selectedPlantForWatering?.name}</DialogTitle>
+            <DialogDescription>
+              Enregistrez l&apos;arrosage de votre plante avec la quantité d&apos;eau utilisée.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="amount" className="text-right">
+                Quantité (ml)
+              </Label>
+              <Input
+                id="amount"
+                type="number"
+                placeholder="100"
+                value={wateringAmount}
+                onChange={(e) => setWateringAmount(e.target.value)}
+                className="col-span-3"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="note" className="text-right">
+                Note (optionnel)
+              </Label>
+              <Textarea
+                id="note"
+                placeholder="Ajouter une note..."
+                value={wateringNote}
+                onChange={(e) => setWateringNote(e.target.value)}
+                className="col-span-3"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setSelectedPlantForWatering(null)}
+            >
+              Annuler
+            </Button>
+            <Button
+              type="button"
+              onClick={handleWaterPlant}
+              disabled={createWateringMutation.isPending || !wateringAmount}
+            >
+              {createWateringMutation.isPending ? 'Arrosage...' : 'Arroser'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

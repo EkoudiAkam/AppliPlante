@@ -10,6 +10,7 @@ import {
   Request,
   Query,
   ParseIntPipe,
+  Logger,
 } from '@nestjs/common';
 import { PlantsService } from './plants.service';
 import { CreatePlantDto } from './dto/create-plant.dto';
@@ -19,10 +20,16 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 @Controller('plants')
 @UseGuards(JwtAuthGuard)
 export class PlantsController {
+  private readonly logger = new Logger(PlantsController.name);
+  
   constructor(private readonly plantsService: PlantsService) {}
 
   @Post()
   async create(@Request() req, @Body() createPlantDto: CreatePlantDto) {
+    this.logger.log('Received plant creation request');
+    this.logger.log('Request body:', JSON.stringify(createPlantDto, null, 2));
+    this.logger.log('User ID:', req.user.id);
+    
     return this.plantsService.create(req.user.id, createPlantDto);
   }
 

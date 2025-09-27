@@ -25,6 +25,7 @@ const plantSchema = z.object({
   notes: z.string().max(500, 'Les notes ne peuvent pas dépasser 500 caractères').optional(),
   location: z.string().min(1, 'L\'emplacement est requis').max(100, 'L\'emplacement ne peut pas dépasser 100 caractères'),
   waterFrequencyDays: z.number().min(1, 'La fréquence doit être d\'au moins 1 jour').max(365, 'La fréquence ne peut pas dépasser 365 jours'),
+  waterAmountMl: z.number().min(50, 'La quantité doit être d\'au moins 50ml').max(2000, 'La quantité ne peut pas dépasser 2000ml'),
 });
 
 type PlantFormData = z.infer<typeof plantSchema>;
@@ -84,6 +85,7 @@ export default function EditPlantPage() {
         notes: plant.notes || '',
         location: plant.location,
         waterFrequencyDays: plant.waterFrequencyDays,
+        waterAmountMl: plant.waterAmountMl || 250,
       });
 
       // Définir l'image existante comme aperçu
@@ -99,12 +101,12 @@ export default function EditPlantPage() {
     try {
       const plantData = {
         ...data,
-        image: preview ? (preview.startsWith('data:') ? getBase64 || undefined : preview) : undefined,
+        imageUrl: preview ? (preview.startsWith('data:') ? getBase64 || undefined : preview) : undefined,
       };
 
-      // S'assurer que image n'est pas null
-      if (plantData.image === null) {
-        plantData.image = undefined;
+      // S'assurer que imageUrl n'est pas null
+      if (plantData.imageUrl === null) {
+        plantData.imageUrl = undefined;
       }
 
       await updatePlantMutation.mutateAsync({ id: plantId, data: plantData });

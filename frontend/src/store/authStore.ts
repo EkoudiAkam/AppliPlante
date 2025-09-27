@@ -122,7 +122,7 @@ export const useAuthStore = create<AuthState>()(
           : null;
         
         if (!token) {
-          set({ isAuthenticated: false, user: null });
+          set({ isAuthenticated: false, user: null, isLoading: false });
           return;
         }
 

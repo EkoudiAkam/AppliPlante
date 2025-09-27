@@ -190,15 +190,15 @@ export default function PlantsPage() {
                 </svg>
               </div>
               <h3 className="text-lg font-medium text-gray-900 mb-2">
-                {searchTerm ? 'Aucune plante trouvée' : 'Aucune plante'}
+                {filters.search ? 'Aucune plante trouvée' : 'Aucune plante'}
               </h3>
               <p className="text-gray-500 mb-6">
-                {searchTerm 
+                {filters.search 
                   ? 'Essayez de modifier votre recherche'
                   : 'Commencez par ajouter votre première plante'
                 }
               </p>
-              {!searchTerm && (
+              {!filters.search && (
                 <Link href={ROUTES.ADD_PLANT}>
                   <Button>
                     <Plus className="h-4 w-4 mr-2" />

@@ -20,7 +20,7 @@ export const useNotifications = () => {
   const { data: plants = [], isLoading: plantsLoading } = usePlants();
 
   return useQuery<Notification[]>({
-    queryKey: [QUERY_KEYS.NOTIFICATIONS],
+    queryKey: [QUERY_KEYS.NOTIFICATIONS, plants.length],
     queryFn: async () => {
       const now = new Date();
       const notifications: Notification[] = [];
@@ -61,7 +61,8 @@ export const useNotifications = () => {
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       );
     },
-    enabled: !plantsLoading && plants.length > 0,
+    enabled: !plantsLoading,
     refetchInterval: 5 * 60 * 1000, // Refetch toutes les 5 minutes
+    staleTime: 2 * 60 * 1000, // Considérer les données comme fraîches pendant 2 minutes
   });
 };

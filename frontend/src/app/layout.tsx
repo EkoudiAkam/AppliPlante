@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import './globals.css';
 
 import { Providers } from '@/components/providers/Providers';
@@ -10,14 +10,18 @@ export const metadata: Metadata = {
   description: 'Application de gestion et de suivi de vos plantes d\'intérieur avec rappels d\'arrosage',
   keywords: ['plantes', 'jardinage', 'arrosage', 'suivi', 'notifications'],
   authors: [{ name: 'Plant Care Team' }],
-  viewport: 'width=device-width, initial-scale=1',
   manifest: '/manifest.json',
-  themeColor: '#16a34a',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
     title: 'PlantCare',
   },
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  themeColor: '#16a34a',
 };
 
 export default function RootLayout({
